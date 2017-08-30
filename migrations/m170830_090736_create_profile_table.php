@@ -16,7 +16,7 @@ class m170830_090736_create_profile_table extends Migration
             'id' => 'pk',
             'user_id' => $this->integer()->notNull(),
             'skype' => $this->string(255)->notNull()->unique()->defaultValue(null),
-            'phone' => $this->integer()->notNull()->defaultValue(null),
+            'phone' => $this->string()->notNull()->defaultValue(null),
             'country' => $this->string(38)->notNull()->defaultValue(null),
             'city' => $this->string(178)->notNull()->defaultValue(null),
             'age' => $this->integer()->notNull()->defaultValue(null),
