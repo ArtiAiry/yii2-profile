@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\SignupForm;
+use app\models\User;
 use Yii;
 use app\models\Profile;
 use app\models\ProfileSearch;
@@ -51,6 +53,7 @@ class ProfileController extends Controller
      */
     public function actionView($id)
     {
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -61,18 +64,70 @@ class ProfileController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+//    public function actionCreate()
+//    {
+//        $profile = new Profile();
+//        $user = new User();
+//        if ($profile->load(Yii::$app->request->post()) && $profile->save() && $user->load(Yii::$app->request->post()) && $user->save()) {
+//            return $this->redirect(['view', 'id' => $profile->id]);
+//        } else {
+//            return $this->render('create2', [
+//                'user'=> $user,
+//                'profile' => $profile,
+//            ]);
+//        }
+//    }
+//    public function actionCreate()
+//    {
+//
+//        $user = new User();
+//        $profile = new Profile();
+//
+////        $model = new SignupForm();
+//
+//        if(Yii::$app->request->post())
+//        {
+//
+//            if($profile->load(Yii::$app->request->post()) &&  $user->load(Yii::$app->request->post()))
+//
+//            {
+//                $isValid = $user->validate();
+//                $isValid = $profile->validate() && $isValid;
+//                if($isValid)
+//                    {
+//                return $this->redirect(['view','id' => $profile->id]);
+//                    }
+//            }
+//        }
+//        return $this->render('create', [
+//            'user' => $user,
+//            'profile' => $profile,
+//        ]);
+//    }
+
+
     public function actionCreate()
     {
-        $model = new Profile();
+        $profile = new Profile();
+        $user = new User();
+//        var_dump(Yii::$app->request->post());
+        if(Yii::$app->request->post()) {
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+
+            if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+                if ($profile->profileRegister()) {
+                    return $this->redirect(['view', 'id' => $profile->id]);
+                }
+                echo "suck the dick, 'cause we young now";
+            }
         }
+        return $this->render('create', [
+            'user' => $user,
+            'profile' => $profile
+        ]);
     }
+
+
 
     /**
      * Updates an existing Profile model.
@@ -80,17 +135,48 @@ class ProfileController extends Controller
      * @param integer $id
      * @return mixed
      */
+
+
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+//            return $this->render('update', [
+//                'model' => $model,
+//            ]);
+//        }
+//    }
+
+
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        $user = User::findOne($id);
+        $profile = Profile::findOne($id);
+
+        if (!isset($user, $profile)) {
+            throw new NotFoundHttpException("Профиль пользователя не найден.");
         }
+
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
+                $user->save(false);
+                $profile->save(false);
+                return $this->redirect(['view', 'id' => $id]);
+            }
+        }
+
+        return $this->render('update', [
+
+            'user' => $user,
+            'profile' => $profile,
+        ]);
     }
 
     /**
@@ -99,12 +185,27 @@ class ProfileController extends Controller
      * @param integer $id
      * @return mixed
      */
+//    public function actionDelete($id)
+//    {
+//        $this->findModel($id)->delete();
+//
+//        return $this->redirect(['index']);
+//    }
+
+
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $user = User::findOne($id);
+        $profile = Profile::findOne($id);
+
+        $user->findOne($id)->delete();
+//        $profile->findOne($id)->delete();
 
         return $this->redirect(['index']);
+
     }
+
+
 
     /**
      * Finds the Profile model based on its primary key value.
@@ -113,7 +214,7 @@ class ProfileController extends Controller
      * @return Profile the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    public function findModel($id)
     {
         if (($model = Profile::findOne($id)) !== null) {
             return $model;

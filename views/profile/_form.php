@@ -1,37 +1,43 @@
 <?php
 
+use app\models\Profile;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use dosamigos\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Profile */
+/* @var $profile app\models\Profile */
+/* @var $user app\models\User */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="profile-form">
 
+
+
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($user, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'skype')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($profile, 'skype')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'phone')->textInput() ?>
+    <?= $form->field($profile, 'phone')->textInput() ?>
 
-    <?= $form->field($model, 'country')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($profile, 'country')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($profile, 'city')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'age')->textInput() ?>
+    <?= $form->field($profile, 'age')->textInput() ?>
 
-    <?= $form->field($model, 'gender')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($profile, 'gender')->dropDownList([
+        '0' => 'Мужской',
+        '1' => 'Женский',
 
+    ])->label(''); ?>
 
-<!--    --><?//= $form->field($model, 'dob')->textInput() ?>
-    <?= $form->field($model, 'dob')->widget(
+    <?= $form->field($profile, 'dob')->widget(
     DatePicker::className(),[
-        'model' => $model,
+        'model' => $profile,
         'inline' => false,
         'language' => 'ru',
         'size' => 'ms',
