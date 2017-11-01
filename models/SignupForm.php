@@ -17,6 +17,13 @@ class SignupForm extends Model
     public $email;
     public $password;
     public $repeat_password;
+    public $skype;
+    public $phone;
+    public $country;
+    public $city;
+    public $age;
+    public $gender;
+    public $dob;
 
     public function rules()
     {
@@ -46,6 +53,44 @@ class SignupForm extends Model
             $profile = new Profile();
 
             $profile->user_id = $user->id;
+
+            $user->link('profile', $profile);
+
+            $db = \Yii::$app->db;
+            $transaction = $db->beginTransaction();
+            if ($user->create() && $profile->save()) {
+
+                $transaction->commit();
+            } else {
+                $transaction->rollback();
+            }
+            return $user->create() ? $user : null;
+
+        }
+        return null;
+
+    }
+
+    public function profileRegister()
+    {
+        if($this->validate())
+        {
+            $user = new User();
+
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->setPassword($this->password);
+            $user->save();
+
+            $profile = new Profile();
+
+            $profile->user_id = $user->id;
+            $profile->skype = $this->skype;
+            $profile->phone = $this->phone;
+            $profile->country = $this->country;
+            $profile->city = $this->city;
+            $profile->age = $this->age;
+            $profile->gender = $this->gender;
 
             $user->link('profile', $profile);
 

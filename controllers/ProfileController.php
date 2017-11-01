@@ -108,22 +108,17 @@ class ProfileController extends Controller
 
     public function actionCreate()
     {
-        $profile = new Profile();
-        $user = new User();
+        $model = new SignupForm();
 //        var_dump(Yii::$app->request->post());
         if(Yii::$app->request->post()) {
-
-
-            if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
-                if ($profile->profileRegister()) {
-                    return $this->redirect(['view', 'id' => $profile->id]);
+                if ($model->profileRegister()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
                 }
-                echo "suck the dick, 'cause we young now";
+                return "suck a dick, 'cause we on now";
             }
-        }
-        return $this->render('create', [
-            'user' => $user,
-            'profile' => $profile
+
+        return $this->render('create1', [
+            'model' => $model,
         ]);
     }
 
